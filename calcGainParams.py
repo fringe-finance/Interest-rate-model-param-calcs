@@ -1,12 +1,17 @@
 timePeriodDays = 1 / 48
 blocksPerYear = 2102400  # correct value: 2628000, incorrect value: 2102400
+daysPerYear = 365
 maxIncreasePerPeriod = 0.05
 maxDecreasePerPeriod = 0.05
 targetUtilisationRate = 0.5
 
+blocksPerPeriod = timePeriodDays * (blocksPerYear / daysPerYear)
+maxDecreasePerBlock = maxDecreasePerPeriod / blocksPerPeriod
+maxIncreasePerBlock = maxIncreasePerPeriod / blocksPerPeriod
+
 
 #######################      GAIN      #######################
-gain = (maxDecreasePerPeriod * (365 / timePeriodDays) * (10**18)) / (
+gain = (maxDecreasePerBlock * (365 / timePeriodDays) * (10**18)) / (
     blocksPerYear * targetUtilisationRate
 )
 HRgain = (maxDecreasePerPeriod * (365 / timePeriodDays)) / (targetUtilisationRate)
@@ -14,8 +19,9 @@ HRgain = (maxDecreasePerPeriod * (365 / timePeriodDays)) / (targetUtilisationRat
 
 #######################      JUMP GAIN      #######################
 jumpGain = (
-    (maxIncreasePerPeriod / maxDecreasePerPeriod) * targetUtilisationRate * (10**18)
+    (maxIncreasePerBlock / maxDecreasePerBlock) * targetUtilisationRate * (10**18)
 ) / (1 - targetUtilisationRate)
+
 HRjumpGain = ((maxIncreasePerPeriod / maxDecreasePerPeriod) * targetUtilisationRate) / (
     1 - targetUtilisationRate
 )
