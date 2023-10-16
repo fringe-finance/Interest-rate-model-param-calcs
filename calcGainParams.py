@@ -14,13 +14,13 @@ parser.add_argument(
     "--maxIncrease",
     type=float,
     required=True,
-    help="Maximum amount interest rate should be allowed to increase in one period (0.05 means interest rate increases by at most 5%)",
+    help="Maximum amount interest rate should be allowed to increase in one period 0.05 means interest rate increases by at most 5 percent",
 )
 parser.add_argument(
     "--maxDecrease",
     type=float,
     required=True,
-    help="Maximum amount interest rate should be allowed to decrease in one period (0.05 means interest rate decreases by at most 5%)",
+    help="Maximum amount interest rate should be allowed to decrease in one period. 0.05 means interest rate decreases by at most 5 percent",
 )
 parser.add_argument(
     "--targetUtil", type=float, required=True, help="Target utilisation rate"
@@ -29,7 +29,7 @@ parser.add_argument(
     "--blocksPerYear",
     type=int,
     required=True,
-    help="Number of blocks per year (this will vary on a per chain basis)",
+    help="Number of blocks per year. This will vary on a per chain basis.",
 )
 
 parser.add_argument(
