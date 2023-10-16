@@ -1,30 +1,86 @@
-timePeriodDays = 1 / 48
-maxIncreasePerPeriod = 0.05
-maxDecreasePerPeriod = 0.05
-targetUtilisationRate = 0.5
-blocksPerYear = 2102400  # correct value: 2628000, incorrect value: 2102400
+import argparse
 
+# Initialize argparse
+parser = argparse.ArgumentParser(description="Calculate gain and jump gain values")
 
-# calculate time period as a fraction of one year
-timePeriodInYears = timePeriodDays * 365
+# Add command-line arguments
+parser.add_argument(
+    "--period",
+    type=float,
+    required=True,
+    help="The length of the period referred to by maxIncreasePerPeriod and maxDecreasePerPeriod, in days",
+)
+parser.add_argument(
+    "--maxIncrease",
+    type=float,
+    required=True,
+    help="Maximum amount interest rate should be allowed to increase in one period (0.05 means interest rate increases by at most 5%)",
+)
+parser.add_argument(
+    "--maxDecrease",
+    type=float,
+    required=True,
+    help="Maximum amount interest rate should be allowed to decrease in one period (0.05 means interest rate decreases by at most 5%)",
+)
+parser.add_argument(
+    "--targetUtil", type=float, required=True, help="Target utilisation rate"
+)
+parser.add_argument(
+    "--blocksPerYear",
+    type=int,
+    required=True,
+    help="Number of blocks per year (this will vary on a per chain basis)",
+)
 
+parser.add_argument(
+    "--format",
+    type=str,
+    required=True,
+    help="(stored/deploy) Whether to return values stored in the smart contract or values used in the deployment script",
+)
 
-## calculate downwards gain
-maxDownwardsUtilRateError = targetUtilisationRate
+# Parse arguments
+args = parser.parse_args()
+
+# Extract configuration parameters from command-line arguments
+period = args.period
+maxIncreasePerPeriod = args.maxIncrease
+maxDecreasePerPeriod = args.maxDecrease
+targetUtilRate = args.targetUtil
+blocksPerYear = args.blocksPerYear
+format = args.format
+
+# Perform calculations
+timePeriodInYears = period * 365
+
+# Downwards gain calculations
+maxDownwardsUtilRateError = targetUtilRate
 originalMaxDecreasePerPeriod = maxDownwardsUtilRateError * timePeriodInYears
 downwardsGain = maxDecreasePerPeriod / originalMaxDecreasePerPeriod
 
-## calculate upwards gain
-maxUpwardsUtilRateError = 1 - targetUtilisationRate
+# Upwards gain calculations
+maxUpwardsUtilRateError = 1 - targetUtilRate
 originalMaxIncreasePerPeriod = maxUpwardsUtilRateError * timePeriodInYears
 upwardsGain = maxIncreasePerPeriod / originalMaxIncreasePerPeriod
 
-# calculate final values for gain and jumpGain
+# Final gain and jumpGain calculations
 gain = downwardsGain
 jumpGain = upwardsGain / downwardsGain
 
-gainPerBlock = gain * blocksPerYear
-jumpGain18 = jumpGain * 10**18
+# Apply adjustments to produce values stored in smart contract
+STOREDgainPerBlock = gain
+STOREDjumpGain18 = jumpGain * 10**18
 
-print(f"Gain: {gainPerBlock}")
-print(f"Jump gain: {jumpGain18}")
+# Apply adjustments to produce values used to deploy smart contract
+DEPLOYgainPerYear = gain * blocksPerYear
+DEPLOYjumpGain18PerYear = jumpGain * 10**18 * blocksPerYear
+
+
+if format == "stored":
+    print("(Stored) gain per block: {}".format(int(STOREDgainPerBlock)))
+    print("(Stored) jump gain * 10e18: {}".format(int(STOREDjumpGain18)))
+elif format == "deploy":
+    print("(Deploy) gain per year: {}".format(int(DEPLOYgainPerYear)))
+    print(
+        "(Deploy) jump gain * 10e18 per year: {}".format(int(DEPLOYjumpGain18PerYear))
+    )
