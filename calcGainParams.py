@@ -68,19 +68,19 @@ gain = downwardsGain
 jumpGain = upwardsGain / downwardsGain
 
 # Apply adjustments to produce values stored in smart contract
-STOREDgainPerBlock = gain
-STOREDjumpGain18 = jumpGain * 10**18
+STOREDgainPerBlock18 = gain * 10**18
+STOREDjumpGainPerBlock18 = jumpGain * 10**18
 
 # Apply adjustments to produce values used to deploy smart contract
-DEPLOYgainPerYear = gain * blocksPerYear
-DEPLOYjumpGain18PerYear = jumpGain * 10**18 * blocksPerYear
+DEPLOYgainPerYear18 = gain * blocksPerYear * 10**18
+DEPLOYjumpGainPerYear18 = jumpGain * blocksPerYear * 10**18
 
 
 if format == "stored":
-    print("(Stored) gain per block: {}".format(int(STOREDgainPerBlock)))
-    print("(Stored) jump gain * 10e18: {}".format(int(STOREDjumpGain18)))
+    print("(Stored) gain per block: {}".format(int(STOREDgainPerBlock18)))
+    print("(Stored) jump gain * 10e18: {}".format(int(STOREDjumpGainPerBlock18)))
 elif format == "deploy":
-    print("(Deploy) gain per year: {}".format(int(DEPLOYgainPerYear)))
+    print("(Deploy) gain per year: {}".format(int(DEPLOYgainPerYear18)))
     print(
-        "(Deploy) jump gain * 10e18 per year: {}".format(int(DEPLOYjumpGain18PerYear))
+        "(Deploy) jump gain * 10e18 per year: {}".format(int(DEPLOYjumpGainPerYear18))
     )
