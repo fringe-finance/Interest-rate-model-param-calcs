@@ -1,43 +1,30 @@
 timePeriodDays = 1 / 48
-blocksPerYear = 2102400  # correct value: 2628000, incorrect value: 2102400
-daysPerYear = 365
 maxIncreasePerPeriod = 0.05
 maxDecreasePerPeriod = 0.05
 targetUtilisationRate = 0.5
-
-blocksPerPeriod = timePeriodDays * (blocksPerYear / daysPerYear)
-maxDecreasePerBlock = maxDecreasePerPeriod / blocksPerPeriod
-maxIncreasePerBlock = maxIncreasePerPeriod / blocksPerPeriod
+blocksPerYear = 2102400  # correct value: 2628000, incorrect value: 2102400
 
 
-#######################      GAIN      #######################
-gain = (maxDecreasePerBlock * (365 / timePeriodDays) * (10**18)) / (
-    blocksPerYear * targetUtilisationRate
-)
-HRgain = (maxDecreasePerPeriod * (365 / timePeriodDays)) / (targetUtilisationRate)
+# calculate time period as a fraction of one year
+timePeriodInYears = timePeriodDays * 365
 
 
-#######################      JUMP GAIN      #######################
-jumpGain = (
-    (maxIncreasePerBlock / maxDecreasePerBlock) * targetUtilisationRate * (10**18)
-) / (1 - targetUtilisationRate)
+## calculate downwards gain
+maxDownwardsUtilRateError = targetUtilisationRate
+originalMaxDecreasePerPeriod = maxDownwardsUtilRateError * timePeriodInYears
+downwardsGain = maxDecreasePerPeriod / originalMaxDecreasePerPeriod
 
-HRjumpGain = ((maxIncreasePerPeriod / maxDecreasePerPeriod) * targetUtilisationRate) / (
-    1 - targetUtilisationRate
-)
+## calculate upwards gain
+maxUpwardsUtilRateError = 1 - targetUtilisationRate
+originalMaxIncreasePerPeriod = maxUpwardsUtilRateError * timePeriodInYears
+upwardsGain = maxIncreasePerPeriod / originalMaxIncreasePerPeriod
 
+# calculate final values for gain and jumpGain
+gain = downwardsGain
+jumpGain = upwardsGain / downwardsGain
 
-#######################      TARGET UTILISATION      #######################
-targetUtil = targetUtilisationRate * (10**18)
-HRtargetUtil = targetUtilisationRate
+gainPerBlock = gain * blocksPerYear
+jumpGain18 = jumpGain * 10**18
 
-
-print("\nFOR SMART CONTRACT:")
-print("Gain:", round(gain, 1))
-print("Jump gain:", round(jumpGain, 1))
-print("Target utilisation rate:", round(targetUtil, 1))
-
-print("\n\n\nFOR HUMANS:")
-print("Gain:", round(HRgain, 3))
-print("Jump gain:", round(HRjumpGain, 3))
-print("Target utilisation rate:", round(HRtargetUtil, 3))
+print(f"Gain: {gainPerBlock}")
+print(f"Jump gain: {jumpGain18}")
