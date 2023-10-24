@@ -78,9 +78,7 @@ DEPLOYjumpGainPerYear18 = jumpGain * blocksPerYear * 10**18
 
 if format == "stored":
     print("(Stored) gain per block: {}".format(int(STOREDgainPerBlock18)))
-    print("(Stored) jump gain * 10e18: {}".format(int(STOREDjumpGainPerBlock18)))
+    print("(Stored) jump gain {}".format(int(STOREDjumpGainPerBlock18)))
 elif format == "deploy":
     print("(Deploy) gain per year: {}".format(int(DEPLOYgainPerYear18)))
-    print(
-        "(Deploy) jump gain * 10e18 per year: {}".format(int(DEPLOYjumpGainPerYear18))
-    )
+    print("(Deploy) jump gain per year: {}".format(int(DEPLOYjumpGainPerYear18)))
