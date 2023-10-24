@@ -44,8 +44,8 @@ args = parser.parse_args()
 
 # Extract configuration parameters from command-line arguments
 period = args.period
-maxIncreasePerPeriod = args.maxIncrease
-maxDecreasePerPeriod = args.maxDecrease
+desiredMaxIncreasePerPeriod = args.maxIncrease
+desiredMaxDecreasePerPeriod = args.maxDecrease
 targetUtilRate = args.targetUtil
 blocksPerYear = args.blocksPerYear
 format = args.format
@@ -56,12 +56,12 @@ timePeriodInYears = period * 365
 # Downwards gain calculations
 maxDownwardsUtilRateError = targetUtilRate
 originalMaxDecreasePerPeriod = maxDownwardsUtilRateError * timePeriodInYears
-downwardsGain = maxDecreasePerPeriod / originalMaxDecreasePerPeriod
+downwardsGain = desiredMaxDecreasePerPeriod / originalMaxDecreasePerPeriod
 
 # Upwards gain calculations
 maxUpwardsUtilRateError = 1 - targetUtilRate
 originalMaxIncreasePerPeriod = maxUpwardsUtilRateError * timePeriodInYears
-upwardsGain = maxIncreasePerPeriod / originalMaxIncreasePerPeriod
+upwardsGain = desiredMaxIncreasePerPeriod / originalMaxIncreasePerPeriod
 
 # Final gain and jumpGain calculations
 gain = downwardsGain
