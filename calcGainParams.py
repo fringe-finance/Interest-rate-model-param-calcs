@@ -71,7 +71,7 @@ jumpGain = upwardsGain / downwardsGain
 STOREDgainPerBlock18 = gain * 10**18
 STOREDjumpGainPerBlock18 = jumpGain * 10**18
 
-# Apply adjustments to produce values used to deploy smart contract
+# Apply adjustments to produce values used to configure deployment scripts
 DEPLOYgainPerYear18 = gain * blocksPerYear * 10**18
 DEPLOYjumpGainPerYear18 = jumpGain * blocksPerYear * 10**18
 
