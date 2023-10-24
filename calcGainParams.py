@@ -8,7 +8,7 @@ parser.add_argument(
     "--period",
     type=float,
     required=True,
-    help="The length of the period referred to by maxIncreasePerPeriod and maxDecreasePerPeriod, in days",
+    help="The length ofv the period referred to by maxIncreasePerPeriod and maxDecreasePerPeriod, in days",
 )
 parser.add_argument(
     "--maxIncrease",
