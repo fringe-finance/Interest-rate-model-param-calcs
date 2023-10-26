@@ -51,7 +51,7 @@ blocksPerYear = args.blocksPerYear
 format = args.format
 
 # Perform calculations
-timePeriodInYears = period * 365
+timePeriodInYears = period / 365
 
 # Downwards gain calculations
 maxDownwardsUtilRateError = targetUtilRate
@@ -78,7 +78,7 @@ DEPLOYjumpGainPerYear18 = jumpGain * blocksPerYear * 10**18
 
 if format == "stored":
     print("(Stored) gain per block: {}".format(int(STOREDgainPerBlock18)))
-    print("(Stored) jump gain {}".format(int(STOREDjumpGainPerBlock18)))
+    print("(Stored) jump gain per block: {}".format(int(STOREDjumpGainPerBlock18)))
 elif format == "deploy":
     print("(Deploy) gain per year: {}".format(int(DEPLOYgainPerYear18)))
     print("(Deploy) jump gain per year: {}".format(int(DEPLOYjumpGainPerYear18)))
