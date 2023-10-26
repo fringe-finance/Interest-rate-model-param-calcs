@@ -55,12 +55,14 @@ timePeriodInYears = period / 365
 
 # Downwards gain calculations
 maxDownwardsUtilRateError = targetUtilRate
-originalMaxDecreasePerPeriod = maxDownwardsUtilRateError * timePeriodInYears
+originalMaxDecreasePerYear = maxDownwardsUtilRateError * blocksPerYear * blocksPerYear
+originalMaxDecreasePerPeriod = originalMaxDecreasePerYear * timePeriodInYears
 downwardsGain = desiredMaxDecreasePerPeriod / originalMaxDecreasePerPeriod
 
 # Upwards gain calculations
 maxUpwardsUtilRateError = 1 - targetUtilRate
-originalMaxIncreasePerPeriod = maxUpwardsUtilRateError * timePeriodInYears
+originalMaxIncreasePerYear = maxUpwardsUtilRateError * blocksPerYear * blocksPerYear
+originalMaxIncreasePerPeriod = originalMaxIncreasePerYear * timePeriodInYears
 upwardsGain = desiredMaxIncreasePerPeriod / originalMaxIncreasePerPeriod
 
 # Final gain and jumpGain calculations
@@ -68,12 +70,12 @@ gain = downwardsGain
 jumpGain = upwardsGain / downwardsGain
 
 # Apply adjustments to produce values stored in smart contract
-STOREDgainPerBlock18 = gain
+STOREDgainPerBlock18 = gain * 10**18
 STOREDjumpGainPerBlock18 = jumpGain * 10**18
 STOREDtargetUtilRate18 = targetUtilRate * 10**18
 
 # Apply adjustments to produce values used to configure deployment scripts
-DEPLOYgainPerYear18 = gain * blocksPerYear
+DEPLOYgainPerYear18 = gain * blocksPerYear * 10**18
 DEPLOYjumpGainPerYear18 = jumpGain * blocksPerYear * 10**18
 DEPLOYtargetUtilRate18 = targetUtilRate * 10**18
 
@@ -85,3 +87,6 @@ elif format == "deploy":
     print("(Deploy) gain per year: {}".format(int(DEPLOYgainPerYear18)))
     print("(Deploy) jump gain per year: {}".format(int(DEPLOYjumpGainPerYear18)))
     print("(Deploy) target utilisation rate: {}".format(int(DEPLOYtargetUtilRate18)))
+
+
+## rate at which interest rate per block increases or decreases per block, as a function of the

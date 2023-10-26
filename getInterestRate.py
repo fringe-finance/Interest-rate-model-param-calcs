@@ -1,4 +1,5 @@
 from web3 import Web3
+import time
 
 # Initialize web3
 w3 = Web3(
@@ -48,6 +49,8 @@ jumpRateModelV3Proxy_abi = """
 # Contract addresses (replace these with actual values)
 blendingTokenProxy_address = "0xcB034b9A387DA193F524aB9E222f909dfEDC08c9"
 jumpRateModelV3Proxy_address = "0xDaad874Ec0dd2345F1Ec05959CFfBb7906fB4F9d"
+blocksPerYear = 2102400
+
 
 # Initialize contract instances
 blendingTokenProxy_contract = w3.eth.contract(
@@ -72,9 +75,10 @@ new_borrow_rate = jumpRateModelV3Proxy_contract.functions.getBorrowRate(
     cash, borrows, 0, blendingTokenProxy_address
 ).call()  # Assuming no reserves for simplification
 
+
 # Print calculated values
 print(f"Cash: {cash}")
 print(f"Borrows: {borrows}")
 print(f"Current Block: {current_block}")
 print(f"Utilization Rate: {utilization_rate}")
-print(f"New Borrow Rate: {new_borrow_rate}")
+print(f"New Borrow Rate: {(new_borrow_rate*blocksPerYear*100)/10**18}%")
