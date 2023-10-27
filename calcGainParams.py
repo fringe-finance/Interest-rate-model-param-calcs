@@ -61,13 +61,15 @@ timePeriodInYears = period / 365
 
 # Downwards gain calculations
 maxDownwardsUtilRateError = targetUtilRate
-originalMaxDecreasePerYear = maxDownwardsUtilRateError * blocksPerYear * blocksPerYear
+originalMaxDecreasePerYear = (
+    maxDownwardsUtilRateError  # * blocksPerYear * blocksPerYear
+)
 originalMaxDecreasePerPeriod = originalMaxDecreasePerYear * timePeriodInYears
 downwardsGain = desiredMaxDecreasePerPeriod / originalMaxDecreasePerPeriod
 
 # Upwards gain calculations
 maxUpwardsUtilRateError = 1 - targetUtilRate
-originalMaxIncreasePerYear = maxUpwardsUtilRateError * blocksPerYear * blocksPerYear
+originalMaxIncreasePerYear = maxUpwardsUtilRateError  # * blocksPerYear * blocksPerYear
 originalMaxIncreasePerPeriod = originalMaxIncreasePerYear * timePeriodInYears
 upwardsGain = desiredMaxIncreasePerPeriod / originalMaxIncreasePerPeriod
 
@@ -81,7 +83,8 @@ READjumpGainPerBlock18 = jumpGain * 10**18
 READtargetUtilRate18 = targetUtilRate * 10**18
 
 # Apply adjustments to produce values used to configure deployment scripts
-WRITEgainPerYear18 = gain * blocksPerYear * 10**18
+# WRITEgainPerYear18 = gain * blocksPerYear * 10**18
+WRITEgainPerYear18 = gain * 10**18
 WRITEjumpGainPerYear18 = jumpGain * blocksPerYear * 10**18
 WRITEtargetUtilRate18 = targetUtilRate * 10**18
 
