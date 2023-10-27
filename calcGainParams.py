@@ -39,7 +39,7 @@ parser.add_argument(
     "--format",
     type=str,
     required=True,
-    help="(stored/deploy) Whether to return values stored in the smart contract or values used in the deployment script",
+    help="(read/write) Whether to return values corresponding to those stored in the JumpRateModel v3 contract (read) or values passed to updateJumpRateModel when deploying or modifying parameters (write)",
 )
 
 # Parse arguments
@@ -55,6 +55,9 @@ format = args.format
 
 # Perform calculations
 timePeriodInYears = period / 365
+
+
+### see gist for explanation of the below logic
 
 # Downwards gain calculations
 maxDownwardsUtilRateError = targetUtilRate
@@ -73,23 +76,20 @@ gain = downwardsGain
 jumpGain = upwardsGain / downwardsGain
 
 # Apply adjustments to produce values stored in smart contract
-STOREDgainPerBlock18 = gain * 10**18
-STOREDjumpGainPerBlock18 = jumpGain * 10**18
-STOREDtargetUtilRate18 = targetUtilRate * 10**18
+READgainPerBlock18 = gain * 10**18
+READjumpGainPerBlock18 = jumpGain * 10**18
+READtargetUtilRate18 = targetUtilRate * 10**18
 
 # Apply adjustments to produce values used to configure deployment scripts
-DEPLOYgainPerYear18 = gain * blocksPerYear * 10**18
-DEPLOYjumpGainPerYear18 = jumpGain * blocksPerYear * 10**18
-DEPLOYtargetUtilRate18 = targetUtilRate * 10**18
+WRITEgainPerYear18 = gain * blocksPerYear * 10**18
+WRITEjumpGainPerYear18 = jumpGain * blocksPerYear * 10**18
+WRITEtargetUtilRate18 = targetUtilRate * 10**18
 
-if format == "stored":
-    print("(Stored) gain per block: {}".format(int(STOREDgainPerBlock18)))
-    print("(Stored) jump gain per block: {}".format(int(STOREDjumpGainPerBlock18)))
-    print("(Stored) target utilisation rate: {}".format(int(STOREDtargetUtilRate18)))
-elif format == "deploy":
-    print("(Deploy) gain per year: {}".format(int(DEPLOYgainPerYear18)))
-    print("(Deploy) jump gain per year: {}".format(int(DEPLOYjumpGainPerYear18)))
-    print("(Deploy) target utilisation rate: {}".format(int(DEPLOYtargetUtilRate18)))
-
-
-## rate at which interest rate per block increases or decreases per block, as a function of the
+if format == "read":
+    print("(Read) gain per block: {}".format(int(READgainPerBlock18)))
+    print("(Read) jump gain per block: {}".format(int(READjumpGainPerBlock18)))
+    print("(Read) target utilisation rate: {}".format(int(READtargetUtilRate18)))
+elif format == "write":
+    print("(Write) gain per year: {}".format(int(WRITEgainPerYear18)))
+    print("(Write) jump gain per year: {}".format(int(WRITEjumpGainPerYear18)))
+    print("(Write) target utilisation rate: {}".format(int(WRITEtargetUtilRate18)))
