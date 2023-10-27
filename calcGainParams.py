@@ -23,7 +23,10 @@ parser.add_argument(
     help="Maximum amount interest rate should be allowed to decrease in one period. 0.05 means interest rate decreases by at most 5 percent",
 )
 parser.add_argument(
-    "--targetUtil", type=float, required=True, help="Target utilisation rate"
+    "--targetUtil",
+    type=float,
+    required=True,
+    help="Target utilisation rate. I.e. passing a value of 0.5 = 50% target utilisation rate",
 )
 parser.add_argument(
     "--blocksPerYear",
