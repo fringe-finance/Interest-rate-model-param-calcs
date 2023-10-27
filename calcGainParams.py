@@ -61,15 +61,13 @@ timePeriodInYears = period / 365
 
 # Downwards gain calculations
 maxDownwardsUtilRateError = targetUtilRate
-originalMaxDecreasePerYear = (
-    maxDownwardsUtilRateError  # * blocksPerYear * blocksPerYear
-)
+originalMaxDecreasePerYear = maxDownwardsUtilRateError * blocksPerYear * blocksPerYear
 originalMaxDecreasePerPeriod = originalMaxDecreasePerYear * timePeriodInYears
 downwardsGain = desiredMaxDecreasePerPeriod / originalMaxDecreasePerPeriod
 
 # Upwards gain calculations
 maxUpwardsUtilRateError = 1 - targetUtilRate
-originalMaxIncreasePerYear = maxUpwardsUtilRateError  # * blocksPerYear * blocksPerYear
+originalMaxIncreasePerYear = maxUpwardsUtilRateError * blocksPerYear * blocksPerYear
 originalMaxIncreasePerPeriod = originalMaxIncreasePerYear * timePeriodInYears
 upwardsGain = desiredMaxIncreasePerPeriod / originalMaxIncreasePerPeriod
 
@@ -77,22 +75,22 @@ upwardsGain = desiredMaxIncreasePerPeriod / originalMaxIncreasePerPeriod
 gain = downwardsGain
 jumpGain = upwardsGain / downwardsGain
 
+targetUtilRate18 = targetUtilRate * 10**18
+
 # Apply adjustments to produce values stored in smart contract
 READgainPerBlock18 = gain * 10**18
 READjumpGainPerBlock18 = jumpGain * 10**18
-READtargetUtilRate18 = targetUtilRate * 10**18
+
 
 # Apply adjustments to produce values used to configure deployment scripts
-# WRITEgainPerYear18 = gain * blocksPerYear * 10**18
-WRITEgainPerYear18 = gain * 10**18
+WRITEgainPerYear18 = gain * blocksPerYear * 10**18
 WRITEjumpGainPerYear18 = jumpGain * blocksPerYear * 10**18
-WRITEtargetUtilRate18 = targetUtilRate * 10**18
 
 if format == "read":
     print("(Read) gain per block: {}".format(int(READgainPerBlock18)))
     print("(Read) jump gain per block: {}".format(int(READjumpGainPerBlock18)))
-    print("(Read) target utilisation rate: {}".format(int(READtargetUtilRate18)))
+    print("(Read) target utilisation rate: {}".format(int(targetUtilRate18)))
 elif format == "write":
     print("(Write) gain per year: {}".format(int(WRITEgainPerYear18)))
     print("(Write) jump gain per year: {}".format(int(WRITEjumpGainPerYear18)))
-    print("(Write) target utilisation rate: {}".format(int(WRITEtargetUtilRate18)))
+    print("(Write) target utilisation rate: {}".format(int(targetUtilRate18)))
