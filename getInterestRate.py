@@ -49,7 +49,9 @@ jumpRateModelV3Proxy_abi = """
 # Contract addresses (replace these with actual values)
 blendingTokenProxy_address = "0xcB034b9A387DA193F524aB9E222f909dfEDC08c9"
 jumpRateModelV3Proxy_address = "0xDaad874Ec0dd2345F1Ec05959CFfBb7906fB4F9d"
-blocksPerYear = 2102400
+blocksPerYear = 2628000
+blocksPerDay = blocksPerYear / 365
+daysPerYear = 365
 
 
 # Initialize contract instances
@@ -76,9 +78,13 @@ new_borrow_rate = jumpRateModelV3Proxy_contract.functions.getBorrowRate(
 ).call()  # Assuming no reserves for simplification
 
 
+borrowAPY = ((((new_borrow_rate / 1e18 * blocksPerDay) + 1) ** daysPerYear) - 1) * 100
+
+
 # Print calculated values
 print(f"Cash: {cash}")
 print(f"Borrows: {borrows}")
 print(f"Current Block: {current_block}")
 print(f"Utilization Rate: {utilization_rate}")
-print(f"New Borrow Rate: {(new_borrow_rate*blocksPerYear*100)/10**18}%")
+print(f"Blocks per day: {blocksPerDay}")
+print(f"New Borrow Rate: {int(borrowAPY*10)/10}%")
