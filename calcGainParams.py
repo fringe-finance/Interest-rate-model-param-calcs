@@ -36,11 +36,20 @@ parser.add_argument(
 )
 
 parser.add_argument(
+    "--maxBorrowRate",
+    type=float,
+    required=True,
+    help="Maximum allowed borrow interest rate. E.g. 0.1 means at most 10% interest rate per year.",
+)
+
+
+parser.add_argument(
     "--format",
     type=str,
     required=True,
     help="(read/write) Whether to return values corresponding to those stored in the JumpRateModel v3 contract (read) or values passed to updateJumpRateModel when deploying or modifying parameters (write)",
 )
+
 
 # Parse arguments
 args = parser.parse_args()
@@ -76,6 +85,7 @@ gain = downwardsGain
 jumpGain = upwardsGain / downwardsGain
 
 targetUtilRate18 = targetUtilRate * 10**18
+newMaxBorrow18 = args.maxBorrowRate * 10**18 * blocksPerYear
 
 # Apply adjustments to produce values stored in smart contract
 READgainPerBlock18 = gain * 10**18
@@ -90,7 +100,9 @@ if format == "read":
     print("(Read) gain per block: {}".format(int(READgainPerBlock18)))
     print("(Read) jump gain per block: {}".format(int(READjumpGainPerBlock18)))
     print("(Read) target utilisation rate: {}".format(int(targetUtilRate18)))
+    print("(Read) new max borrow rate: {}".format(int(newMaxBorrow18)))
 elif format == "write":
     print("(Write) gain per year: {}".format(int(WRITEgainPerYear18)))
     print("(Write) jump gain per year: {}".format(int(WRITEjumpGainPerYear18)))
     print("(Write) target utilisation rate: {}".format(int(targetUtilRate18)))
+    print("(Write) new max borrow rate: {}".format(int(newMaxBorrow18)))
