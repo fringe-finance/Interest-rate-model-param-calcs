@@ -85,7 +85,7 @@ gain = downwardsGain
 jumpGain = upwardsGain / downwardsGain
 
 targetUtilRate18 = targetUtilRate * 10**18
-newMaxBorrow18 = args.maxBorrowRate * 10**18 * blocksPerYear
+newMaxBorrow18 = args.maxBorrowRate * 10**18 / blocksPerYear
 
 # Apply adjustments to produce values stored in smart contract
 READgainPerBlock18 = gain * 10**18
