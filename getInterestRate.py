@@ -10,12 +10,10 @@ parser.add_argument("--blend", required=True, help="Blending token contract addr
 parser.add_argument(
     "--jumpRate", required=True, help="Jump rate model contract address"
 )
-parser.add_argument(
-    "--blocksPerYear", type=int, required=True, help="Number of blocks per year"
-)
 
 # Parse the arguments
 args = parser.parse_args()
+
 # Initialize web3
 w3 = Web3(Web3.HTTPProvider(args.rpc))
 
@@ -29,28 +27,30 @@ blendingTokenProxy_abi = """
 ]
 """
 
-# ABI for JumpRateModelV3Proxy
+# ABI for JumpRateModelV3Proxy, including the blocksPerYear function
 jumpRateModelV3Proxy_abi = """
 [
+    {"constant": true, "inputs": [], "name": "blocksPerYear", "outputs": [{"name": "", "type": "uint256"}], "type": "function"},
     {"constant": true, "inputs": [{"name": "cash", "type": "uint256"},{"name": "borrows", "type": "uint256"},{"name": "reserves", "type": "uint256"},{"name": "blendingToken", "type": "address"}],"name": "getBorrowRate","outputs": [{"name": "", "type": "uint256"}], "type": "function"},
     {"constant": true, "inputs": [{"name": "cash", "type": "uint256"},{"name": "borrows", "type": "uint256"},{"name": "reserves", "type": "uint256"},{"name": "reserveFactorMantissa", "type": "uint256"},{"name": "blendingToken", "type": "address"}],"name": "getSupplyRate","outputs": [{"name": "", "type": "uint256"}], "type": "function"}
 ]
 """
 
+# Initialize contract instances
 blendingTokenProxy_address = args.blend
 jumpRateModelV3Proxy_address = args.jumpRate
-blocksPerYear = args.blocksPerYear
-daysPerYear = 365
-blocksPerDay = blocksPerYear / daysPerYear
 
-
-# Initialize contract instances
 blendingTokenProxy_contract = w3.eth.contract(
     address=blendingTokenProxy_address, abi=blendingTokenProxy_abi
 )
 jumpRateModelV3Proxy_contract = w3.eth.contract(
     address=jumpRateModelV3Proxy_address, abi=jumpRateModelV3Proxy_abi
 )
+
+# Fetch blocksPerYear from the contract
+blocksPerYear = jumpRateModelV3Proxy_contract.functions.blocksPerYear().call()
+daysPerYear = 365
+blocksPerDay = blocksPerYear / daysPerYear
 
 # Fetch market data
 cash = blendingTokenProxy_contract.functions.getCash().call()
@@ -84,3 +84,4 @@ print(f"Utilization Rate: {int(utilization_rate*1000)/10}%")
 print(f"Borrow APY: {int(borrowAPY * 10) / 10}%")
 print(f"Supply APY: {int(supplyAPY * 10) / 10}%")
 print(f"RAW New Borrow Rate: {borrowAPY}%")
+print(f"Blocks Per Year: {blocksPerYear}")
