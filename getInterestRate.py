@@ -7,9 +7,6 @@ parser = argparse.ArgumentParser(description="Script to calculate APYs")
 # Define arguments
 parser.add_argument("--rpc", required=True, help="The RPC URL")
 parser.add_argument("--blend", required=True, help="Blending token contract address")
-parser.add_argument(
-    "--jumpRate", required=True, help="Jump rate model contract address"
-)
 
 # Parse the arguments
 args = parser.parse_args()
@@ -23,7 +20,8 @@ blendingTokenProxy_abi = """
     {"constant": true, "inputs": [], "name": "getCash", "outputs": [{"name": "", "type": "uint256"}], "type": "function"},
     {"constant": true, "inputs": [], "name": "totalBorrowsCurrent", "outputs": [{"name": "", "type": "uint256"}], "type": "function"},
     {"constant": true, "inputs": [], "name": "totalReserves", "outputs": [{"name": "", "type": "uint256"}], "type": "function"},
-    {"constant": true, "inputs": [], "name": "reserveFactorMantissa", "outputs": [{"name": "", "type": "uint256"}], "type": "function"}
+    {"constant": true, "inputs": [], "name": "reserveFactorMantissa", "outputs": [{"name": "", "type": "uint256"}], "type": "function"},
+    {"constant": true, "inputs": [], "name": "interestRateModel", "outputs": [{"name": "", "type": "address"}], "type": "function"}
 ]
 """
 
@@ -38,10 +36,13 @@ jumpRateModelV3Proxy_abi = """
 
 # Initialize contract instances
 blendingTokenProxy_address = args.blend
-jumpRateModelV3Proxy_address = args.jumpRate
 
 blendingTokenProxy_contract = w3.eth.contract(
     address=blendingTokenProxy_address, abi=blendingTokenProxy_abi
+)
+
+jumpRateModelV3Proxy_address = (
+    blendingTokenProxy_contract.functions.interestRateModel().call()
 )
 jumpRateModelV3Proxy_contract = w3.eth.contract(
     address=jumpRateModelV3Proxy_address, abi=jumpRateModelV3Proxy_abi
